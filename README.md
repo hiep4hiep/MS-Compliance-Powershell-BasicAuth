@@ -10,6 +10,8 @@
 ```Import-Module ExchangeOnlineManagement```
 
 ### Connect to Sec & Compliance Powershell
+Continue typing these commands to Powershell. Make sure you change the value of <your-password>, <your-username>, <your-tenant-id> to your specific tenant information.
+  
 ```
 $password = "<your-password>"
 $username = "<your-username>"
