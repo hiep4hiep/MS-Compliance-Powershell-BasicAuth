@@ -48,8 +48,8 @@ suspicious emails                            NotStarted
 
 # Appendix: install Powershell on RHEL 8
 
-# Register the Microsoft RedHat repository
+### Register the Microsoft RedHat repository
 curl https://packages.microsoft.com/config/rhel/8/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
 
-# Install PowerShell
+### Install PowerShell
 sudo dnf install --assumeyes powershell
