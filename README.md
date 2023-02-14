@@ -53,3 +53,10 @@ curl https://packages.microsoft.com/config/rhel/8/prod.repo | sudo tee /etc/yum.
 
 ### Install PowerShell
 sudo dnf install --assumeyes powershell
+
+### Install PSWSMan module
+- Get into pwsh
+```
+Install-Module -Name PSWSMan
+Install-WSMan
+```
