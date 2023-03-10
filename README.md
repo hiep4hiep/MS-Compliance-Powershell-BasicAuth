@@ -40,6 +40,27 @@ test002                                      NotStarted
 suspicious emails                            NotStarted
 ```
 
+
+### Run a Compliance Search
+```
+$cmd_params = @{
+            "Name" = $search_name
+            "Case" = $case
+            "ContentMatchQuery" = $kql
+            "Description" = $description
+            "AllowNotFoundExchangeLocationsEnabled" = $allow_not_found_exchange_locations
+            "ExchangeLocation" = $exchange_location
+            "ExchangeLocationExclusion" = $exchange_location_exclusion
+            "PublicFolderLocation" = $public_folder_location
+            "SharePointLocation" = $share_point_location
+            "SharePointLocationExclusion" = $share_point_location_exclusion
+}
+$response = New-ComplianceSearch @cmd_params
+
+return $response
+```
+
+
 ### Disconnect the session
 ```Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue```
 
