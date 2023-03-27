@@ -43,23 +43,20 @@ suspicious emails                            NotStarted
 
 ### Run a Compliance Search
 ```
-$cmd_params = @{
-            "Name" = $search_name
-            "Case" = $case
-            "ContentMatchQuery" = $kql
-            "Description" = $description
-            "AllowNotFoundExchangeLocationsEnabled" = $allow_not_found_exchange_locations
-            "ExchangeLocation" = $exchange_location
-            "ExchangeLocationExclusion" = $exchange_location_exclusion
-            "PublicFolderLocation" = $public_folder_location
-            "SharePointLocation" = $share_point_location
-            "SharePointLocationExclusion" = $share_point_location_exclusion
-}
-$response = New-ComplianceSearch @cmd_params
+$search_name = "<search-name-here>"
+$Search=New-ComplianceSearch -Name $search_name -ExchangeLocation All -ContentMatchQuery 'from:<from-address> AND subject:"<subject-keywords>"' 
+Start-ComplianceSearch -Identity $Search.Identity
 
-return $response
+
+### Verify the Compliance Search has run completely
+```
+Get-ComplianceSearch -Identity $search_name
 ```
 
+### Trigger soft delete
+```
+New-ComplianceSearchAction -SearchName $search_name -Purge -PurgeType SoftDelete -Confirm:$false
+```
 
 ### Disconnect the session
 ```Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue```
