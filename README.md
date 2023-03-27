@@ -59,7 +59,9 @@ New-ComplianceSearchAction -SearchName $search_name -Purge -PurgeType SoftDelete
 ```
 
 ### Disconnect the session
-```Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue```
+```
+Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
+```
 
 
 
