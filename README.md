@@ -46,7 +46,7 @@ suspicious emails                            NotStarted
 $search_name = "<search-name-here>"
 $Search=New-ComplianceSearch -Name $search_name -ExchangeLocation All -ContentMatchQuery 'from:<from-address> AND subject:"<subject-keywords>"' 
 Start-ComplianceSearch -Identity $Search.Identity
-
+```
 
 ### Verify the Compliance Search has run completely
 ```
