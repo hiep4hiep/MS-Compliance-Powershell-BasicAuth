@@ -19,10 +19,9 @@ $tid = "<your-tenant-id>"
 
 $secPassword = ConvertTo-SecureString "$password" -AsPlainText -Force
 $delegated_cred = New-Object System.Management.Automation.PSCredential ("$username", $secPassword)
-$CommandName = "Get-ComplianceSearch"
 $connection_uri = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
 $azure_ad_authorization_endpoint_uri = "https://login.microsoftonline.com/$tid"
-Connect-IPPSSession -Credential $delegated_cred -CommandName $CommandName -WarningAction:SilentlyContinue -ConnectionUri $connection_uri -AzureADAuthorizationEndpointUri $azure_ad_authorization_endpoint_uri | Out-Null
+Connect-IPPSSession -Credential $delegated_cred -WarningAction:SilentlyContinue -ConnectionUri $connection_uri -AzureADAuthorizationEndpointUri $azure_ad_authorization_endpoint_uri | Out-Null
 ```
 
 ### Verify whether you can run a command
@@ -79,4 +78,56 @@ Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 ```
 Install-Module -Name PSWSMan
 Install-WSMan
+```
+
+# Appendix: Script to run via WinRM
+Triggering the script via WinRM will not keep the session, hence we need to start the session and disconnect session everytime we trigger a command.
+### Step 1: Start a compliance search
+```
+$password = "<your-password>"
+$username = "<your-username>"
+$tid = "<your-tenant-id>"
+
+$secPassword = ConvertTo-SecureString "$password" -AsPlainText -Force
+$delegated_cred = New-Object System.Management.Automation.PSCredential ("$username", $secPassword)
+$connection_uri = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+$azure_ad_authorization_endpoint_uri = "https://login.microsoftonline.com/$tid"
+Connect-IPPSSession -Credential $delegated_cred -WarningAction:SilentlyContinue -ConnectionUri $connection_uri -AzureADAuthorizationEndpointUri $azure_ad_authorization_endpoint_uri | Out-Null
+$search_name = "<search-name-here>"
+$Search=New-ComplianceSearch -Name $search_name -ExchangeLocation All -ContentMatchQuery 'from:<from-address> AND subject:"<subject-keywords>"' 
+Start-ComplianceSearch -Identity $Search.Identity
+Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
+
+```
+
+### Step 2: Check if the compliance search has finished
+```
+$password = "<your-password>"
+$username = "<your-username>"
+$tid = "<your-tenant-id>"
+
+$secPassword = ConvertTo-SecureString "$password" -AsPlainText -Force
+$delegated_cred = New-Object System.Management.Automation.PSCredential ("$username", $secPassword)
+$connection_uri = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+$azure_ad_authorization_endpoint_uri = "https://login.microsoftonline.com/$tid"
+Connect-IPPSSession -Credential $delegated_cred -WarningAction:SilentlyContinue -ConnectionUri $connection_uri -AzureADAuthorizationEndpointUri $azure_ad_authorization_endpoint_uri | Out-Null
+$search_name = "<search-name-here>"
+Get-ComplianceSearch -Identity $search_name
+Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
+```
+
+### Step 3: Start the soft delete action on the compliance search
+```
+$password = "<your-password>"
+$username = "<your-username>"
+$tid = "<your-tenant-id>"
+
+$secPassword = ConvertTo-SecureString "$password" -AsPlainText -Force
+$delegated_cred = New-Object System.Management.Automation.PSCredential ("$username", $secPassword)
+$connection_uri = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+$azure_ad_authorization_endpoint_uri = "https://login.microsoftonline.com/$tid"
+Connect-IPPSSession -Credential $delegated_cred -WarningAction:SilentlyContinue -ConnectionUri $connection_uri -AzureADAuthorizationEndpointUri $azure_ad_authorization_endpoint_uri | Out-Null
+$search_name = "<search-name-here>"
+New-ComplianceSearchAction -SearchName $search_name -Purge -PurgeType SoftDelete -Confirm:$false
+Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 ```
