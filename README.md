@@ -135,7 +135,10 @@ Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 
 # Appendix: If the organization does not allow using basic Auth for service account, then use Application Delegated method instead
 https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps
-Note that the app only method with certificate authentication does not support commands other than Get-ComplianceSearch. 
+Note that the app only method with certificate authentication does not support commands other than Get-ComplianceSearch. So the Delegated scenario is required here. The below steps are used for Delegated scenario, where we:
+- Request access to the common Application by Microsoft for this flow (the Application ID is a0c73c16-a7e3-4564-9a95-2bdf47383716). This application is Microsoft owned.
+- Get access-token and use the token to connect to PS
+- Instead of using Connect-IPPSSession, we connect and authenticate a PSSession to https://ps.compliance.protection.outlook.com/powershell-liveid using Oauth. It then redirect and create a session for Security & Compliance Powershell.
 
 ### First, authenticate and get access bearer token
 Request authentication, use device code to authenticate using web UI to initiate the authentication.
