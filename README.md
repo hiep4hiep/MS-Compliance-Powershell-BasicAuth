@@ -158,7 +158,7 @@ $response = Invoke-RestMethod 'https://login.microsoftonline.com/fa8a7288-73bf-4
 $response | ConvertTo-Json
 ```
 
-When the access_token is expired, get access_token again from refresh_token
+As the access_token is expired in about 1-1.5 hour, get access_token again from refresh_token
 ```
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Content-Type", "application/x-www-form-urlencoded")
