@@ -142,7 +142,7 @@ So the Delegated scenario is required here. The below steps are used for Delegat
 - Add the account to Microsoft Purview https://compliance.microsoft.com, role Data Investigator
 - Request access to the common Application by Microsoft for this flow (the Application ID is a0c73c16-a7e3-4564-9a95-2bdf47383716). This application is Microsoft owned. We make the request with Device authentication method, where the user account needs to log in (using MFA) to grant access.
 - Get access-token and use the token to connect to Powershell session.
-- Instead of using Connect-IPPSSession, we connect and authenticate a PSSession to https://ps.compliance.protection.outlook.com/powershell-liveid using Oauth. It then redirect and create a session for Security & Compliance Powershell.
+- Instead of using Connect-IPPSSession, we connect and authenticate a PSSession to https://ps.compliance.protection.outlook.com/powershell-liveid using Oauth. It then redirects and creates a PS session for Security & Compliance Powershell.
 
 
 Ref resource:
@@ -150,7 +150,7 @@ Ref resource:
 - https://learn.microsoft.com/en-us/answers/questions/904644/assign-compliance-center-admin-roles-to-service-pr
 - https://www.cyberdrain.com/automating-with-powershell-using-the-secure-application-model-updates/
 ### First, authenticate and get access bearer token
-Request authentication, use device code to authenticate using web UI to initiate the authentication.
+Request authentication, use device code to authenticate using web UI to initiate the authentication. From this request, the API will return a device code to login on https://microsoft.com/devicelogin. 
 ```
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("return-client-request-id", "true")
@@ -160,7 +160,7 @@ $response = Invoke-RestMethod 'https://login.microsoftonline.com/fa8a7288-73bf-4
 $response | ConvertTo-Json
 ```
 
-Get bearer access token and its refresh token
+After logging in by the user account in the above step, get bearer access token and its refresh token by running this request.
 ```
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("return-client-request-id", "true")
