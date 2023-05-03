@@ -131,3 +131,50 @@ $search_name = "<search-name-here>"
 New-ComplianceSearchAction -SearchName $search_name -Purge -PurgeType SoftDelete -Confirm:$false
 Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 ```
+
+
+# Appendix: If the organization does not allow using basic Auth for service account, then use Application Delegated method instead
+
+### First, authenticate and get access bearer token
+Request authentication, use device code to authenticate using web UI to initiate the authentication.
+```
+curl --location 'https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/devicecode' \
+--header 'return-client-request-id: true' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716' \
+--data-urlencode 'scope=offline_access https://outlook.office365.com/.default'
+```
+
+Get bearer access token and its refresh toekn
+```
+curl --location 'https://login.microsoftonline.com/fa8a7288-73bf-4f16-8551-54ecd2a62606/oauth2/v2.0/token' \
+--header 'return-client-request-id: true' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=urn:ietf:params:oauth:grant-type:device_code' \
+--data-urlencode 'device_code=<device-code-from-the-1st-curl-request>' \
+--data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716'
+```
+
+When the access_token is expired, get access_token again from refresh_token
+```
+curl --location 'https://login.microsoftonline.com/organizations/oauth2/v2.0/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=refresh_token' \
+--data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716' \
+--data-urlencode 'scope=offline_access https://outlook.office365.com/.default' \
+--data-urlencode 'refresh_token=<your-refresh-token-from-the-2nd-request>'
+```
+
+### Second, authenticate and get access bearer token
+```
+$bearer_token = '<your-bearer-token>'
+$upn='<upn-of-the-user-to-delegate>'
+$tokenValue = ConvertTo-SecureString "Bearer $bearer_token" -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential($upn, $tokenValue)
+
+$SccSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://ps.compliance.protection.outlook.com/powershell-liveid?BasicAuthToOAuthConversion=true" -Credential $credential -AllowRedirection -Authentication Basic
+Import-PSSession -Session $SccSession
+```
+### After you have a session, run other Compliance Search commands as usual
+
+
