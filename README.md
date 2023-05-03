@@ -133,7 +133,7 @@ Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 ```
 
 
-# Appendix: If the organization does not allow using basic Auth for service account, then use Application Delegated method instead
+# Appendix: Application Delegated method
 https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps
 Note that the app only method with certificate authentication does not support commands other than Get-ComplianceSearch. So the Delegated scenario is required here. The below steps are used for Delegated scenario, where we:
 - Request access to the common Application by Microsoft for this flow (the Application ID is a0c73c16-a7e3-4564-9a95-2bdf47383716). This application is Microsoft owned.
@@ -151,7 +151,7 @@ $response = Invoke-RestMethod 'https://login.microsoftonline.com/fa8a7288-73bf-4
 $response | ConvertTo-Json
 ```
 
-Get bearer access token and its refresh toekn
+Get bearer access token and its refresh token
 ```
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("return-client-request-id", "true")
