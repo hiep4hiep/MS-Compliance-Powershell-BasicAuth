@@ -139,7 +139,7 @@ If the direct basic authentication for a delegated user is not allowed, use this
 Note that the app only method with certificate authentication does not support commands other than Get-ComplianceSearch (https://learn.microsoft.com/en-us/answers/questions/904644/assign-compliance-center-admin-roles-to-service-pr). 
 So the Delegated scenario is required here. The below steps are used for Delegated scenario, where we:
 - Create a service account (or normal user) on Azure with MFA per the company's policy.
-- Add the account to Microsoft [Purview]([url](https://compliance.microsoft.com/homepage)) (compliance) , role Data Investigator
+- Add the account to Microsoft Purview https://compliance.microsoft.com, role Data Investigator
 - Request access to the common Application by Microsoft for this flow (the Application ID is a0c73c16-a7e3-4564-9a95-2bdf47383716). This application is Microsoft owned. We make the request with Device authentication method, where the user account needs to log in (using MFA) to grant access.
 - Get access-token and use the token to connect to Powershell session.
 - Instead of using Connect-IPPSSession, we connect and authenticate a PSSession to https://ps.compliance.protection.outlook.com/powershell-liveid using Oauth. It then redirect and create a session for Security & Compliance Powershell.
