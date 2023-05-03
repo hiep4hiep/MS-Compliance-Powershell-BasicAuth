@@ -138,31 +138,35 @@ Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 ### First, authenticate and get access bearer token
 Request authentication, use device code to authenticate using web UI to initiate the authentication.
 ```
-curl --location 'https://login.microsoftonline.com/<your-tenant-id>/oauth2/v2.0/devicecode' \
---header 'return-client-request-id: true' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716' \
---data-urlencode 'scope=offline_access https://outlook.office365.com/.default'
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("return-client-request-id", "true")
+$headers.Add("Content-Type", "application/x-www-form-urlencoded")
+$body = "client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716&scope=offline_access%20https%3A%2F%2Foutlook.office365.com%2F.default"
+$response = Invoke-RestMethod 'https://login.microsoftonline.com/fa8a7288-73bf-4f16-8551-54ecd2a62606/oauth2/v2.0/devicecode' -Method 'POST' -Headers $headers -Body $body
+$response | ConvertTo-Json
 ```
 
 Get bearer access token and its refresh toekn
 ```
-curl --location 'https://login.microsoftonline.com/fa8a7288-73bf-4f16-8551-54ecd2a62606/oauth2/v2.0/token' \
---header 'return-client-request-id: true' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'grant_type=urn:ietf:params:oauth:grant-type:device_code' \
---data-urlencode 'device_code=<device-code-from-the-1st-curl-request>' \
---data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716'
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("return-client-request-id", "true")
+$headers.Add("Content-Type", "application/x-www-form-urlencoded")
+
+$body = "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=<device-code-from-the-1st-request>&client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716"
+
+$response = Invoke-RestMethod 'https://login.microsoftonline.com/fa8a7288-73bf-4f16-8551-54ecd2a62606/oauth2/v2.0/token' -Method 'POST' -Headers $headers -Body $body
+$response | ConvertTo-Json
 ```
 
 When the access_token is expired, get access_token again from refresh_token
 ```
-curl --location 'https://login.microsoftonline.com/organizations/oauth2/v2.0/token' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'grant_type=refresh_token' \
---data-urlencode 'client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716' \
---data-urlencode 'scope=offline_access https://outlook.office365.com/.default' \
---data-urlencode 'refresh_token=<your-refresh-token-from-the-2nd-request>'
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Content-Type", "application/x-www-form-urlencoded")
+
+$body = "grant_type=refresh_token&client_id=a0c73c16-a7e3-4564-9a95-2bdf47383716&scope=offline_access%20https%3A%2F%2Foutlook.office365.com%2F.default&refresh_token=<refresh-token-from-the-2nd-request>"
+
+$response = Invoke-RestMethod 'https://login.microsoftonline.com/organizations/oauth2/v2.0/token' -Method 'POST' -Headers $headers -Body $body
+$response | ConvertTo-Json
 ```
 
 ### Second, authenticate and get access bearer token
