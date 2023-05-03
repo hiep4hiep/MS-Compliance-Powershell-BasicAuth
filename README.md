@@ -134,6 +134,8 @@ Disconnect-ExchangeOnline -Confirm:$false -WarningAction:SilentlyContinue
 
 
 # Appendix: If the organization does not allow using basic Auth for service account, then use Application Delegated method instead
+https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps
+Note that the app only method with certificate authentication does not support commands other than Get-ComplianceSearch. 
 
 ### First, authenticate and get access bearer token
 Request authentication, use device code to authenticate using web UI to initiate the authentication.
